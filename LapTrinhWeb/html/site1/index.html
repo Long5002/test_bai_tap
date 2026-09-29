@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bài tập 2 - Gọi API Node-RED</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; width: 350px; }
+        ul { padding-left: 20px; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Danh sách sinh viên (API)</h2>
+        <div id="status">Đang lấy dữ liệu từ API...</div>
+        <div id="content"></div>
+    </div>
+
+    <script>
+        const API_URL = '/api/tacke';
+
+        async function fetchSVData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+
+                if (data.ok === 1) {
+                    document.getElementById('status').innerHTML = `<p style="color:green;">Trạng thái: ${data.msg}</p>`;
+                    let htmlList = '<ul>';
+                    data.dssv.forEach(sv => {
+                        htmlList += `<li>Tên: <b>${sv.name}</b> | Số tiền: <span>${sv.money}</span></li>`;
+                    });
+                    htmlList += '</ul>';
+                    document.getElementById('content').innerHTML = htmlList;
+                }
+            } catch (error) {
+                document.getElementById('status').innerText = 'Chưa thể lấy dữ liệu từ API!';
+            }
+        }
+
+        window.onload = fetchSVData;
+    </script>
+</body>
+</html>
